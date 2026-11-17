@@ -1,0 +1,119 @@
+'use strict';
+
+const BYTES_IN_KIB = 1024;
+
+const MIB = BYTES_IN_KIB * BYTES_IN_KIB;
+const MS_IN_SECOND = 1000;
+const DECIMAL_DIGITS = 2;
+const TIME_DIGITS = 0;
+const INDEX_PAD_LENGTH = 2;
+const INDEX_PAD_CHAR = '0';
+
+const DEFAULT_REQUEST_COUNT = 10;
+const MAX_REQUEST_COUNT = 100;
+const DEFAULT_REQUEST_TIMEOUT_MS = 120_000;
+const MAX_REQUEST_TIMEOUT_MS = 600_000;
+const DEFAULT_LOG_LEVEL = 'info';
+const DEFAULT_USER_AGENT = 'spid-test/1.0';
+const MAX_USER_AGENT_LENGTH = 128;
+const MAX_URL_LENGTH = 8192;
+const MIN_QUOTED_LENGTH = 2;
+const EXIT_CODE_FAILURE = 1;
+
+const UNIT_MIB = 'МиБ';
+const UNIT_MS = 'мс';
+const UNIT_SPEED = 'МиБ/с';
+
+const HTTP_PROTOCOL = 'http:';
+const HTTPS_PROTOCOL = 'https:';
+const ALLOWED_PROTOCOLS = Object.freeze([HTTP_PROTOCOL, HTTPS_PROTOCOL]);
+
+const DOUBLE_QUOTE = '"';
+const SINGLE_QUOTE = "'";
+const ENV_EXPORT_PREFIX = 'export ';
+const ENV_COMMENT_PREFIX = '#';
+const ENV_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
+const DIGITS_PATTERN = /^\d+$/;
+const USER_AGENT_FORBIDDEN = /[\r\n\0]/;
+
+const ENV = Object.freeze({
+  FILE_NAME: '.env',
+  REQUEST_COUNT: 'REQUEST_COUNT',
+  REQUEST_TIMEOUT_MS: 'REQUEST_TIMEOUT_MS',
+  LOG_LEVEL: 'LOG_LEVEL',
+  USER_AGENT: 'USER_AGENT',
+});
+
+const FETCH = Object.freeze({
+  REDIRECT: 'follow',
+  CACHE: 'no-store',
+  ACCEPT_ENCODING_HEADER: 'Accept-Encoding',
+  ACCEPT_ENCODING_VALUE: 'identity',
+  USER_AGENT_HEADER: 'User-Agent',
+});
+
+const LOG_LEVELS = Object.freeze({
+  silent: 0,
+  error: 1,
+  info: 2,
+  debug: 3,
+});
+
+const LOG_LEVEL_NAMES = Object.freeze(Object.keys(LOG_LEVELS));
+
+const ERROR_CODES = Object.freeze({
+  APP: 'APP_ERROR',
+  INTERNAL: 'INTERNAL',
+  CONFIG: 'CONFIG',
+  MISSING_URL: 'MISSING_URL',
+  INVALID_URL: 'INVALID_URL',
+  TIMEOUT: 'TIMEOUT',
+  NETWORK: 'NETWORK',
+  HTTP: 'HTTP_ERROR',
+});
+
+const FETCH_ERROR_NAMES = Object.freeze({
+  TIMEOUT: 'TimeoutError',
+  ABORT: 'AbortError',
+});
+
+const FILE_NOT_FOUND = 'ENOENT';
+
+module.exports = {
+  MIB,
+  MS_IN_SECOND,
+  DECIMAL_DIGITS,
+  TIME_DIGITS,
+  INDEX_PAD_LENGTH,
+  INDEX_PAD_CHAR,
+  DEFAULT_REQUEST_COUNT,
+  MAX_REQUEST_COUNT,
+  DEFAULT_REQUEST_TIMEOUT_MS,
+  MAX_REQUEST_TIMEOUT_MS,
+  DEFAULT_LOG_LEVEL,
+  DEFAULT_USER_AGENT,
+  MAX_USER_AGENT_LENGTH,
+  MAX_URL_LENGTH,
+  MIN_QUOTED_LENGTH,
+  EXIT_CODE_FAILURE,
+  UNIT_MIB,
+  UNIT_MS,
+  UNIT_SPEED,
+  HTTP_PROTOCOL,
+  HTTPS_PROTOCOL,
+  ALLOWED_PROTOCOLS,
+  DOUBLE_QUOTE,
+  SINGLE_QUOTE,
+  ENV_EXPORT_PREFIX,
+  ENV_COMMENT_PREFIX,
+  ENV_KEY_PATTERN,
+  DIGITS_PATTERN,
+  USER_AGENT_FORBIDDEN,
+  ENV,
+  FETCH,
+  LOG_LEVELS,
+  LOG_LEVEL_NAMES,
+  ERROR_CODES,
+  FETCH_ERROR_NAMES,
+  FILE_NOT_FOUND,
+};
