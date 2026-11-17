@@ -4,11 +4,15 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 
 const {
+  DEFAULT_FRESH_CONNECTION,
   DEFAULT_LOG_LEVEL,
   DEFAULT_REQUEST_COUNT,
   DEFAULT_REQUEST_TIMEOUT_MS,
   DEFAULT_USER_AGENT,
+  DEFAULT_WARMUP,
   DIGITS_PATTERN,
+  FLAG_OFF,
+  FLAG_ON,
   DOUBLE_QUOTE,
   ENV,
   ENV_COMMENT_PREFIX,
@@ -96,6 +100,23 @@ const readPositiveInt = (env, name, fallback, max) => {
   return value;
 };
 
+const readFlag = (env, name, fallback) => {
+  const raw = env[name];
+  const rawIsEmpty = raw === undefined || raw === '';
+  if (rawIsEmpty) {
+    return fallback;
+  }
+
+  const enabled = raw === FLAG_ON;
+  const disabled = raw === FLAG_OFF;
+  const flagIsKnown = enabled || disabled;
+  if (!flagIsKnown) {
+    throw new AppError(`${name} должен быть ${FLAG_OFF} или ${FLAG_ON}.`, { code: ERROR_CODES.CONFIG });
+  }
+
+  return enabled;
+};
+
 const readUserAgent = (env) => {
   const value = env[ENV.USER_AGENT] || DEFAULT_USER_AGENT;
   const userAgentIsTooLong = value.length > MAX_USER_AGENT_LENGTH;
@@ -128,6 +149,8 @@ const createConfig = (env) => {
     ),
     logLevel,
     userAgent: readUserAgent(env),
+    warmup: readFlag(env, ENV.WARMUP, DEFAULT_WARMUP),
+    freshConnection: readFlag(env, ENV.FRESH_CONNECTION, DEFAULT_FRESH_CONNECTION),
   });
 };
 

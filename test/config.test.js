@@ -8,10 +8,12 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const {
+  DEFAULT_FRESH_CONNECTION,
   DEFAULT_LOG_LEVEL,
   DEFAULT_REQUEST_COUNT,
   DEFAULT_REQUEST_TIMEOUT_MS,
   DEFAULT_USER_AGENT,
+  DEFAULT_WARMUP,
   ENV,
   ERROR_CODES,
   MAX_REQUEST_COUNT,
@@ -25,6 +27,8 @@ test('подставляет значения по умолчанию', () => {
     requestTimeoutMs: DEFAULT_REQUEST_TIMEOUT_MS,
     logLevel: DEFAULT_LOG_LEVEL,
     userAgent: DEFAULT_USER_AGENT,
+    warmup: DEFAULT_WARMUP,
+    freshConnection: DEFAULT_FRESH_CONNECTION,
   });
 });
 
@@ -44,6 +48,17 @@ test('читает числовые настройки и отклоняет м�
   });
   assert.throws(() => createConfig({ [ENV.LOG_LEVEL]: 'verbose' }), { code: ERROR_CODES.CONFIG });
   assert.throws(() => createConfig({ [ENV.USER_AGENT]: 'bad\nagent' }), { code: ERROR_CODES.CONFIG });
+  assert.throws(() => createConfig({ [ENV.WARMUP]: 'yes' }), { code: ERROR_CODES.CONFIG });
+  assert.throws(() => createConfig({ [ENV.FRESH_CONNECTION]: '2' }), { code: ERROR_CODES.CONFIG });
+});
+
+test('читает флаги прогрева и нового соединения', () => {
+  const config = createConfig({
+    [ENV.WARMUP]: '0',
+    [ENV.FRESH_CONNECTION]: '1',
+  });
+  assert.equal(config.warmup, false);
+  assert.equal(config.freshConnection, true);
 });
 
 test('файл .env не перезаписывает уже заданные переменные', async () => {

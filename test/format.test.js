@@ -20,14 +20,31 @@ test('форматирует объём в мебибайтах', () => {
 
 test('скорость считается по сумме байт и сумме времени', () => {
   const result = summarize([
-    { bytes: MIB, elapsedMs: 100 },
-    { bytes: MIB, elapsedMs: 900 },
+    { bytes: MIB, elapsedMs: 100, ttfbMs: 40, bodyMs: 60 },
+    { bytes: MIB, elapsedMs: 900, ttfbMs: 100, bodyMs: 800 },
   ]);
 
   assert.equal(result.totalBytes, 2 * MIB);
   assert.equal(result.totalMs, 1000);
   assert.equal(result.averageMs, 500);
+  assert.equal(result.minMs, 100);
+  assert.equal(result.maxMs, 900);
+  assert.equal(result.medianMs, 500);
+  assert.equal(result.averageTtfbMs, 70);
+  assert.equal(result.averageBodyMs, 430);
   assert.equal(formatSpeed(result.totalBytes, result.totalMs), '2.00');
+});
+
+test('медиана при нечётном числе замеров — средний элемент', () => {
+  const result = summarize([
+    { bytes: 1, elapsedMs: 900, ttfbMs: 1, bodyMs: 1 },
+    { bytes: 1, elapsedMs: 100, ttfbMs: 1, bodyMs: 1 },
+    { bytes: 1, elapsedMs: 200, ttfbMs: 1, bodyMs: 1 },
+  ]);
+
+  assert.equal(result.medianMs, 200);
+  assert.equal(result.minMs, 100);
+  assert.equal(result.maxMs, 900);
 });
 
 test('нулевая длительность не даёт бесконечную скорость', () => {

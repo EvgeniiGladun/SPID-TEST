@@ -3,7 +3,7 @@
 const path = require('node:path');
 
 const { ENV, EXIT_CODE_FAILURE } = require('./src/constants');
-const { printHeader, printSample, printSummary } = require('./src/cli/report');
+const { printHeader, printSample, printSummary, printWarmup } = require('./src/cli/report');
 const { loadConfig } = require('./src/config');
 const { createLogger } = require('./src/lib/logger');
 const { handleFatal } = require('./src/lib/errors');
@@ -35,10 +35,15 @@ const main = async () => {
     logger.info('measurement.start', {
       url: redactUrl(url),
       requests: config.requestCount,
+      warmup: config.warmup,
+      freshConnection: config.freshConnection,
     });
 
-    printHeader(url, config.requestCount);
-    const result = await measure(url, config, printSample);
+    printHeader(url, config);
+    const result = await measure(url, config, {
+      onWarmup: printWarmup,
+      onSample: printSample,
+    });
     printSummary(result);
 
     logger.info('measurement.finish', {
